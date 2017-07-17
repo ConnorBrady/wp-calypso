@@ -14,15 +14,13 @@ import {
 	WOOCOMMERCE_CURRENCY_UPDATE,
 	WOOCOMMERCE_CURRENCY_UPDATE_SUCCESS,
 	WOOCOMMERCE_SETTINGS_GENERAL_REQUEST,
-	WOOCOMMERCE_SETTINGS_GENERAL_REQUEST_FAILURE,
 	WOOCOMMERCE_SETTINGS_GENERAL_REQUEST_SUCCESS,
 } from 'woocommerce/state/action-types';
 
 export const fetchSettingsGeneral = ( siteId, retries = 0 ) => ( dispatch, getState ) => {
-	if (
-		areSettingsGeneralLoaded( getState(), siteId ) ||
-		areSettingsGeneralLoading( getState(), siteId )
-	) {
+	if ( ! retries &&
+		( areSettingsGeneralLoaded( getState(), siteId ) ||
+		areSettingsGeneralLoading( getState(), siteId ) ) ) {
 		return;
 	}
 
@@ -42,16 +40,11 @@ export const fetchSettingsGeneral = ( siteId, retries = 0 ) => ( dispatch, getSt
 			} );
 		} )
 		.catch( error => {
-			dispatch( setError( siteId, getAction, error ) );
-			dispatch( {
-				type: WOOCOMMERCE_SETTINGS_GENERAL_REQUEST_FAILURE,
-				siteId,
-				error,
-			} );
 			//Retry Settigns General Fetch
 			if ( 5 > retries ) {
-				retries++;
-				fetchSettingsGeneral( siteId )( dispatch, getState );
+				fetchSettingsGeneral( siteId, ++retries )( dispatch, getState );
+			} else {
+				dispatch( setError( siteId, getAction, error ) );
 			}
 		} );
 };
