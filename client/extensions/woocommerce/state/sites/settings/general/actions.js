@@ -40,7 +40,7 @@ export const fetchSettingsGeneral = ( siteId, retries = 0 ) => ( dispatch, getSt
 			} );
 		} )
 		.catch( error => {
-			//Retry Settigns General Fetch
+			//Retry Settings General Fetch
 			if ( 5 > retries ) {
 				fetchSettingsGeneral( siteId, ++retries )( dispatch, getState );
 			} else {
