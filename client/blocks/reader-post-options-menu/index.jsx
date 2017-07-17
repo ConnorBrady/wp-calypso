@@ -33,6 +33,7 @@ class ReaderPostOptionsMenu extends React.Component {
 		feed: React.PropTypes.object,
 		onBlock: React.PropTypes.func,
 		showFollow: React.PropTypes.bool,
+		position: React.PropTypes.string,
 	};
 
 	static defaultProps = {
@@ -102,11 +103,10 @@ class ReaderPostOptionsMenu extends React.Component {
 	};
 
 	render() {
-		const post = this.props.post,
-			isEditPossible = PostUtils.userCan( 'edit_post', post ),
-			isDiscoverPost = DiscoverHelper.isDiscoverPost( post ),
-			followUrl = this.getFollowUrl();
-		const { site, feed, teams } = this.props;
+		const { post, site, feed, teams, position } = this.props;
+		const isEditPossible = PostUtils.userCan( 'edit_post', post );
+		const isDiscoverPost = DiscoverHelper.isDiscoverPost( post );
+		const followUrl = this.getFollowUrl();
 		const isTeamMember = isAutomatticTeamMember( teams );
 
 		let isBlockPossible = false;
@@ -137,6 +137,7 @@ class ReaderPostOptionsMenu extends React.Component {
 					className="reader-post-options-menu__ellipsis-menu"
 					popoverClassName="reader-post-options-menu__popover"
 					onToggle={ this.onMenuToggle }
+					position={ position }
 				>
 					{ isTeamMember && site && <ReaderPostOptionsMenuBlogStickers blogId={ +site.ID } /> }
 
