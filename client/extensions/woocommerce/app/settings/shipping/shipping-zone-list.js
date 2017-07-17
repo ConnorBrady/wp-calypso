@@ -14,6 +14,8 @@ import Card from 'components/card';
 import ExtendedHeader from 'woocommerce/components/extended-header';
 import ShippingZoneEntry from './shipping-zone-list-entry';
 import QueryShippingZones, { areShippingZonesFullyLoaded } from 'woocommerce/components/query-shipping-zones';
+import QuerySettingsGeneral from 'woocommerce/components/query-settings-general';
+import { areSettingsGeneralLoaded } from 'woocommerce/state/sites/settings/general/selectors';
 import Notice from 'components/notice';
 import { getLink } from 'woocommerce/lib/nav-utils';
 import { getShippingZones } from 'woocommerce/state/ui/shipping/zones/selectors';
@@ -80,6 +82,7 @@ class ShippingZoneList extends Component {
 		return (
 			<div>
 				<QueryShippingZones siteId={ siteId } />
+				<QuerySettingsGeneral siteId={ siteId } />
 				<ExtendedHeader
 					label={ translate( 'Shipping Zones' ) }
 					description={ translate( 'These are the regions you’ll ship to. ' +
@@ -102,7 +105,7 @@ class ShippingZoneList extends Component {
 export default connect(
 	( state ) => {
 		const savingZones = Boolean( getActionList( state ) );
-		const loaded = areShippingZonesFullyLoaded( state ) && ! savingZones;
+		const loaded = areShippingZonesFullyLoaded( state ) && areSettingsGeneralLoaded( state ) && ! savingZones;
 
 		return {
 			site: getSelectedSite( state ),
