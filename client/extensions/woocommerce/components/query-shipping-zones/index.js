@@ -31,7 +31,7 @@ class QueryShippingZones extends Component {
 	}
 
 	componentWillReceiveProps( { siteId, loaded } ) {
-		//site ID changed, fetch new zones
+		//site ID changed, fetch new settings
 		if ( siteId !== this.props.siteId && ! loaded ) {
 			this.fetch( siteId );
 		}
