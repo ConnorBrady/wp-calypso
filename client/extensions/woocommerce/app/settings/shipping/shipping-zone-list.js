@@ -15,7 +15,7 @@ import ExtendedHeader from 'woocommerce/components/extended-header';
 import ShippingZoneEntry from './shipping-zone-list-entry';
 import QueryShippingZones, { areShippingZonesFullyLoaded } from 'woocommerce/components/query-shipping-zones';
 import QuerySettingsGeneral from 'woocommerce/components/query-settings-general';
-import { areSettingsGeneralLoaded } from 'woocommerce/state/sites/settings/general/selectors';
+import { areSettingsGeneralLoaded, areSettingsGeneralLoadError } from 'woocommerce/state/sites/settings/general/selectors';
 import Notice from 'components/notice';
 import { getLink } from 'woocommerce/lib/nav-utils';
 import { getShippingZones } from 'woocommerce/state/ui/shipping/zones/selectors';
@@ -40,13 +40,16 @@ class ShippingZoneList extends Component {
 	}
 
 	renderContent = () => {
-		const { siteId, loaded, shippingZones, isValid, translate } = this.props;
+		const { siteId, loaded, fetchError, shippingZones, isValid, translate } = this.props;
 
 		const renderShippingZone = ( zone, index ) => {
 			return ( <ShippingZoneEntry key={ index } siteId={ siteId } loaded={ loaded } isValid={ isValid } { ...zone } /> );
 		};
 
-		const zonesToRender = loaded ? shippingZones : [ {}, {}, {} ];
+		let zonesToRender = loaded ? shippingZones : [ {}, {}, {} ];
+		if ( fetchError ) {
+			zonesToRender = [];
+		}
 
 		return (
 			<div>
@@ -113,6 +116,7 @@ export default connect(
 			shippingZones: getShippingZones( state ),
 			savingZones,
 			loaded,
+			fetchError: areSettingsGeneralLoadError( state ), // TODO: add shipping zones/methods fetch errors too
 			isValid: ! loaded || areShippingZonesLocationsValid( state ),
 		};
 	},
